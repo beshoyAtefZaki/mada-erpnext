@@ -1,0 +1,67 @@
+{
+ "creation": "2019-09-17 15:41:25.542323",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "currency",
+  "parent1",
+  "customs_cost",
+  "internal_transport",
+  "penalty",
+  "total_cost"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "customs_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Customs cost"
+  },
+  {
+   "fieldname": "parent1",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "parent",
+   "options": "Purchase Invoice"
+  },
+  {
+   "default": "0",
+   "fieldname": "internal_transport",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Internal Transport "
+  },
+  {
+   "default": "0",
+   "fieldname": "penalty",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "penalty"
+  },
+  {
+   "fieldname": "total_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total cost"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  }
+ ],
+ "istable": 1,
+ "modified": "2019-09-18 04:42:30.489959",
+ "modified_by": "Administrator",
+ "module": "Buying",
+ "name": "Local expenses",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

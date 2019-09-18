@@ -1,0 +1,76 @@
+{
+ "creation": "2019-09-17 12:52:06.172780",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "parint",
+  "service_type",
+  "company_name",
+  "currency",
+  "total",
+  "total_sar"
+ ],
+ "fields": [
+  {
+   "fieldname": "service_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Service Type",
+   "options": "\nShipping\nInsurance",
+   "search_index": 1
+  },
+  {
+   "fieldname": "parint",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Parint",
+   "options": "Purchase Invoice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "default": "0",
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Total",
+   "options": "currency",
+   "precision": "2",
+   "search_index": 1
+  },
+  {
+   "fieldname": "total_sar",
+   "fieldtype": "Currency",
+   "label": "Total (SAR)"
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company  Name",
+   "options": "Supplier",
+   "reqd": 1,
+   "search_index": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2019-09-17 23:42:34.604956",
+ "modified_by": "Administrator",
+ "module": "Buying",
+ "name": "Procurement Services",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

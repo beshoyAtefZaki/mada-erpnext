@@ -1,6 +1,8 @@
 // Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 // License: GNU General Public License v3. See license.txt
 
+
+
 frappe.provide("erpnext.accounts");
 {% include 'erpnext/public/js/controllers/buying.js' %};
 
@@ -17,6 +19,9 @@ erpnext.accounts.PurchaseInvoice = erpnext.buying.BuyingController.extend({
 		}
 	},
 	onload: function() {
+
+
+
 		this._super();
 
 		if(!this.frm.doc.__islocal) {
@@ -236,9 +241,12 @@ erpnext.accounts.PurchaseInvoice = erpnext.buying.BuyingController.extend({
 	},
 
 	supplier: function() {
+
 		var me = this;
+
 		if(this.frm.updating_party_details)
 			return;
+
 		erpnext.utils.get_party_details(this.frm, "erpnext.accounts.party.get_party_details",
 			{
 				posting_date: this.frm.doc.posting_date,
@@ -495,12 +503,133 @@ cur_frm.cscript.select_print_heading = function(doc,cdt,cdn){
 		cur_frm.pformat.print_heading = __("Purchase Invoice");
 }
 
+// create real price fro item
+frappe.ui.form.on("Purchase Invoice Item"  ,{
+
+	rate:function(frm ,cdt, cdn){
+
+		var cost_of_service = 0
+		var avrige = 0
+		var local = frappe.model.get_doc(cdt,cdn);
+		var i = 0 ;
+		if (frm.doc.procurement_services){
+			for(i=0 ; i < frm.doc.procurement_services.length ; i++ ){
+				frm.doc.procurement_services[i].total =0
+			}
+		avrige = cost_of_service / local.qty
+
+		}
+		if(frm.doc.conversion_rate > 0){
+
+			var conversion_rate = frm.doc.conversion_rate * local.rate
+			local.item_real_price =avrige +conversion_rate
+			frappe.model.set_value(cdt,cdn,"item_real_price" ,avrige +conversion_rate)
+		}else{
+		local.item_real_price =avrige +local.rate
+		frappe.model.set_value(cdt,cdn,"item_real_price" ,avrige +local.rate)
+		}
+	}
+})
+
+
+frappe.ui.form.on("Local expenses" ,{
+	customs_cost: function(frm ,cdt, cdn){
+		var local = frappe.model.get_doc(cdt,cdn);
+		frappe.model.set_value(cdt,cdn,"total_cost",local.customs_cost +local.internal_transport+local.penalty)
+	},
+	internal_transport: function(frm ,cdt, cdn){
+		var local = frappe.model.get_doc(cdt,cdn);
+		frappe.model.set_value(cdt,cdn,"total_cost",local.customs_cost +local.internal_transport+local.penalty)
+	},
+	penalty: function(frm ,cdt, cdn){
+		var local = frappe.model.get_doc(cdt,cdn);
+		frappe.model.set_value(cdt,cdn,"total_cost",local.customs_cost +local.internal_transport+local.penalty)
+	},
+	total_cost: function(frm ,cdt, cdn){
+		var local = frappe.model.get_doc(cdt,cdn);
+		var total_in = local.total_cost
+		var item_count = 0 ;
+		var i ;
+		frm.set_value("local_expenses_grand" , total_in)
+		for(i=0 ; i < frm.doc.items.length ; i++ ){
+			item_count += frm.doc.items[i].qty
+		}
+		var avrige = total_in/item_count
+		for(i=0 ; i < frm.doc.items.length ; i++ ){
+			frm.doc.items[i].item_real_price += avrige;
+		}
+
+	},
+
+
+
+})
+frappe.ui.form.on("Procurement Services" ,{
+
+ function(frm){
+			// var local2 = frappe.model.get_doc(cdt,cdn);
+			// var me = this ;
+
+				// frm.set_query("company_name"  ,"procurement_services",function(frm){
+				// 	return{
+				// 		"filters": {
+				// 			"supplier_group": "Insurance services"
+				// 		}
+				// 	}
+				// } )
+
+
+
+
+	},
+	total:function(frm ,cdt, cdn){
+
+		var item_count = 0 ;
+		var local2 = frappe.model.get_doc(cdt,cdn);
+		var cost_of_service = frm.doc.procurement_services_total;
+		var total_grand_ser = frm.doc.services_grand + local2.total ;
+		frm.set_value("services_grand" ,total_grand_ser)
+		var i ;
+		for(i=0 ; i < frm.doc.items.length ; i++ ){
+			item_count += frm.doc.items[i].qty
+		}
+
+		if(item_count > 0){
+
+			cost_of_service += local2.total / item_count
+			frm.set_value("procurement_services_total" ,cost_of_service)
+		} else {
+						cost_of_service += local2.total
+						frm.set_value("procurement_services_total" ,cost_of_service)
+						}
+
+		for(i=0 ; i < frm.doc.items.length ; i++ ){
+			frm.doc.items[i].item_real_price += cost_of_service;
+		}
+	 frm.refresh_field("items")
+
+
+	}
+})
 frappe.ui.form.on("Purchase Invoice", {
+	local_expenses_grand: function(frm){
+
+		var total_end =frm.doc.local_expenses_grand +frm.doc.grand_total+frm.doc.services_grand
+		frm.set_value("invoice_total_grand" ,total_end)
+	},
+	services_grand: function(frm){
+	
+		var total_end =frm.doc.local_expenses_grand +frm.doc.grand_total+frm.doc.services_grand
+		frm.set_value("invoice_total_grand" ,total_end)
+	},
 	setup: function(frm) {
+
+
 		frm.custom_make_buttons = {
 			'Purchase Invoice': 'Debit Note',
 			'Payment Entry': 'Payment'
 		}
+
 
 		frm.fields_dict['items'].grid.get_field('deferred_expense_account').get_query = function(doc) {
 			return {
@@ -523,6 +652,7 @@ frappe.ui.form.on("Purchase Invoice", {
 	},
 
 	onload: function(frm) {
+
 		if(frm.doc.__onload) {
 			if(frm.doc.supplier) {
 				frm.doc.apply_tds = frm.doc.__onload.supplier_tds ? 1 : 0;
@@ -531,11 +661,13 @@ frappe.ui.form.on("Purchase Invoice", {
 				frm.set_df_property("apply_tds", "read_only", 1);
 			}
 		}
+		// add set query to the invoice
 
-		erpnext.queries.setup_queries(frm, "Warehouse", function() {
-			return erpnext.queries.warehouse(frm.doc);
-		});
-	},
+
+						erpnext.queries.setup_queries(frm, "Warehouse", function() {
+							return erpnext.queries.warehouse(frm.doc);
+						});
+					},
 
 	is_subcontracted: function(frm) {
 		if (frm.doc.is_subcontracted === "Yes") {

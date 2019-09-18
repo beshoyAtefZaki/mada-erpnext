@@ -42,6 +42,7 @@
   "col_break4",
   "base_rate",
   "base_amount",
+  "item_real_price",
   "pricing_rules",
   "is_free_item",
   "section_break_22",
@@ -754,11 +755,17 @@
    "fieldtype": "Data",
    "label": "Manufacturer Part Number",
    "read_only": 1
+  },
+  {
+   "fieldname": "item_real_price",
+   "fieldtype": "Currency",
+   "label": "Item Real Price",
+   "options": "Company:company:default_currency"
   }
  ],
  "idx": 1,
  "istable": 1,
- "modified": "2019-06-02 06:36:17.078419",
+ "modified": "2019-09-17 19:47:24.914453",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice Item",
