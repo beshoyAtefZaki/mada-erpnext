@@ -548,16 +548,16 @@ frappe.ui.form.on("Local expenses" ,{
 	total_cost: function(frm ,cdt, cdn){
 		var local = frappe.model.get_doc(cdt,cdn);
 		var total_in = local.total_cost
-		var item_count = 0 ;
-		var i ;
+		// var item_count = 0 ;
+		// var i ;
 		frm.set_value("local_expenses_grand" , total_in)
-		for(i=0 ; i < frm.doc.items.length ; i++ ){
-			item_count += frm.doc.items[i].qty
-		}
-		var avrige = total_in/item_count
-		for(i=0 ; i < frm.doc.items.length ; i++ ){
-			frm.doc.items[i].item_real_price += avrige;
-		}
+		// for(i=0 ; i < frm.doc.items.length ; i++ ){
+		// 	item_count += frm.doc.items[i].qty
+		// }
+		// var avrige = total_in/item_count
+		// for(i=0 ; i < frm.doc.items.length ; i++ ){
+		// 	frm.doc.items[i].item_real_price += avrige;
+		// }
 
 	},
 
@@ -566,59 +566,111 @@ frappe.ui.form.on("Local expenses" ,{
 })
 frappe.ui.form.on("Procurement Services" ,{
 
- function(frm){
-			// var local2 = frappe.model.get_doc(cdt,cdn);
-			// var me = this ;
 
-				// frm.set_query("company_name"  ,"procurement_services",function(frm){
-				// 	return{
-				// 		"filters": {
-				// 			"supplier_group": "Insurance services"
-				// 		}
-				// 	}
-				// } )
-
-
-
-
-	},
 	total:function(frm ,cdt, cdn){
 
 		var item_count = 0 ;
 		var local2 = frappe.model.get_doc(cdt,cdn);
-		var cost_of_service = frm.doc.procurement_services_total;
-		var total_grand_ser = frm.doc.services_grand + local2.total ;
-		frm.set_value("services_grand" ,total_grand_ser)
-		var i ;
-		for(i=0 ; i < frm.doc.items.length ; i++ ){
-			item_count += frm.doc.items[i].qty
-		}
+		var total = local2.total
+		frm.set_value("procurement_services_total" ,total)
+		// var cost_of_service = frm.doc.procurement_services_total;
 
-		if(item_count > 0){
-
-			cost_of_service += local2.total / item_count
-			frm.set_value("procurement_services_total" ,cost_of_service)
-		} else {
-						cost_of_service += local2.total
-						frm.set_value("procurement_services_total" ,cost_of_service)
-						}
-
-		for(i=0 ; i < frm.doc.items.length ; i++ ){
-			frm.doc.items[i].item_real_price += cost_of_service;
-		}
+		// var total_grand_ser = frm.doc.services_grand + local2.total ;
+		// frm.set_value("services_grand" ,total_grand_ser)
+		// var i ;
+		// for(i=0 ; i < frm.doc.items.length ; i++ ){
+		// 	item_count += frm.doc.items[i].qty
+		// }
+		//
+		// if(item_count > 0){
+		//
+		// 	var tcost_of_service = cost_of_service / item_count
+		// 	frm.set_value("procurement_services_total" ,tcost_of_service)
+		// } else {
+		// 				frm.set_value("procurement_services_total" ,cost_of_service)
+		// 				}
+		// 				var b;
+		// for(b=0 ; i < frm.doc.items.length ; i++ ){
+		// 	frm.doc.items[i].item_real_price  += cost_of_service;
+		// }
 	 frm.refresh_field("items")
 
 
 	}
 })
 frappe.ui.form.on("Purchase Invoice", {
-	local_expenses_grand: function(frm){
+	procurement_services_total: function(frm){
 
+		var i ;
+		var accounting = 0
+		for(i=0 ; i < frm.doc.procurement_services.length ; i++ ){
+			accounting += frm.doc.procurement_services[i].total
+		}
+
+		frm.set_value("services_grand" , accounting )
+	},
+	local_expenses_grand: function(frm){
+		var i ;
+		var count_items = 0
+		for(i=0 ; i < frm.doc.items.length ; i++ ){
+			count_items += frm.doc.items[i].qty
+		}
+
+		var total_fee = frm.doc.services_grand +frm.doc.local_expenses_grand
+
+		var base_avr = total_fee / count_items
+
+		for(i=0 ; i < frm.doc.items.length ; i++ ){
+
+			if (frm.doc.conversion_rate > 1){
+
+				var rate_c = frm.doc.conversion_rate * frm.doc.items[i].rate;
+				frm.doc.items[i].item_real_price = rate_c+ base_avr
+			}else{
+
+			frm.doc.items[i].item_real_price = frm.doc.items[i].rate +base_avr}
+		}
+		frm.refresh_field("items")
+
+
+
+
+		// dont
 		var total_end =frm.doc.local_expenses_grand +frm.doc.grand_total+frm.doc.services_grand
 		frm.set_value("invoice_total_grand" ,total_end)
 	},
 	services_grand: function(frm){
-	
+
+		var i ;
+		var count_items = 0
+		for(i=0 ; i < frm.doc.items.length ; i++ ){
+			count_items += frm.doc.items[i].qty
+		}
+
+		var total_fee = frm.doc.services_grand +frm.doc.local_expenses_grand
+
+		var base_avr = total_fee / count_items
+			console.log(base_avr)
+		for(i=0 ; i < frm.doc.items.length ; i++ ){
+
+			if (frm.doc.conversion_rate > 1){
+
+				var rate_c = frm.doc.conversion_rate * frm.doc.items[i].rate;
+				console.log(rate_c)
+				frm.doc.items[i].item_real_price = rate_c+ base_avr
+			}else{
+
+			frm.doc.items[i].item_real_price = frm.doc.items[i].rate + base_avr}
+		}
+		frm.refresh_field("items")
+		// console.log("change")
+		// var pay_cost = 0
+		// var i ;
+		// for(i=0 ; i < frm.doc.procurement_services.length ; i++){
+		// 	pay_cost += frm.doc.procurement_services[i].total
+		// }
+		// frm.set_value("procurement_services_total" ,pay_cost)
+		// frm.set_value("services_grand" ,pay_cost)
 		var total_end =frm.doc.local_expenses_grand +frm.doc.grand_total+frm.doc.services_grand
 		frm.set_value("invoice_total_grand" ,total_end)
 	},
