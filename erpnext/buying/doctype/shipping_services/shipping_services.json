@@ -1,0 +1,49 @@
+{
+ "creation": "2019-09-24 16:38:17.007328",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "service_type",
+  "company_name",
+  "rate"
+ ],
+ "fields": [
+  {
+   "default": "Shipping services",
+   "fieldname": "service_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Service Type",
+   "options": "Shipping services",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "company Name",
+   "options": "Supplier",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate",
+   "reqd": 1
+  }
+ ],
+ "hide_toolbar": 1,
+ "istable": 1,
+ "modified": "2019-09-24 18:20:16.575489",
+ "modified_by": "Administrator",
+ "module": "Buying",
+ "name": "Shipping services",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
