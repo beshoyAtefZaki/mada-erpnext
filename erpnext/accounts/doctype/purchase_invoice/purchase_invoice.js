@@ -512,6 +512,8 @@ frappe.ui.form.on("Purchase Taxes and Charges",{
 		var real_price ;
 		for (i=0 ; i < frm.doc.items.length ; i++){
 			real_price = frm.doc.items[i].rate *rate
+			frappe.model.set_value(cdt,cdn,"shipping_serices",avrige)
+			frm.doc.items[i].shipping_serices = avrige
 			frm.doc.items[i].real_price = real_price + avrige
 		}
 
