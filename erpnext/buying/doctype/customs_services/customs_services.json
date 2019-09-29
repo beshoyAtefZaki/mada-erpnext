@@ -1,0 +1,60 @@
+{
+ "creation": "2019-09-29 16:07:21.366317",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "local_extract",
+  "customs_clearance",
+  "domestic_shipping",
+  "perks",
+  "total"
+ ],
+ "fields": [
+  {
+   "fieldname": "local_extract",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": " Local extract",
+   "options": "Supplier",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "customs_clearance",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Customs clearance"
+  },
+  {
+   "default": "0",
+   "fieldname": "domestic_shipping",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Domestic Shipping"
+  },
+  {
+   "default": "0",
+   "fieldname": "perks",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Perks"
+  },
+  {
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "label": "Total"
+  }
+ ],
+ "istable": 1,
+ "modified": "2019-09-29 16:11:45.830715",
+ "modified_by": "Administrator",
+ "module": "Buying",
+ "name": "CUSTOMS SERVICES",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
