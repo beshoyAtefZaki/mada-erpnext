@@ -34,6 +34,7 @@
   "project",
   "col_break3",
   "is_advance",
+  "description",
   "user_remark",
   "against_account"
  ],
@@ -265,11 +266,16 @@
   {
    "fieldname": "dimension_col_break",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
   }
  ],
  "idx": 1,
  "istable": 1,
- "modified": "2019-12-31 18:12:38.378646",
+ "modified": "2020-01-15 14:11:25.075781",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",

@@ -343,6 +343,8 @@
   {
    "fieldname": "bill_no",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Supplier Invoice No",
    "oldfieldname": "bill_no",
    "oldfieldtype": "Data",
@@ -1298,7 +1300,7 @@
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
- "modified": "2019-09-29 16:09:13.244749",
+ "modified": "2020-01-13 10:47:36.786704",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

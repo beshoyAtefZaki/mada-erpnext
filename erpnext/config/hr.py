@@ -11,6 +11,12 @@ def get_data():
 					"name": "Employee",
 					"onboard": 1,
 				},
+				 {
+                                        "type": "doctype",
+                                        "name": "Employee applications",
+                                        "onboard": 1,
+                                },
+
 				{
 					"type": "doctype",
 					"name": "Employment Type",
