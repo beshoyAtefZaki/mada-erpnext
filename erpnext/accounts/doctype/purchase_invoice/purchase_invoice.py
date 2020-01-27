@@ -326,7 +326,9 @@ class PurchaseInvoice(BuyingController):
 
 	def on_submit(self):
 		super(PurchaseInvoice, self).on_submit()
-
+		#create sales invoice
+		if self.local_extract:
+			create_new_sales_invoice( self.local_extract , self.posting_date ,self.customs_services_total)
 		self.check_prev_docstatus()
 		self.update_status_updater_args()
 		self.update_prevdoc_status()
@@ -924,6 +926,25 @@ def block_invoice(name, hold_comment):
 	if frappe.db.exists('Purchase Invoice', name):
 		pi = frappe.get_doc('Purchase Invoice', name)
 		pi.block_invoice(hold_comment)
+
+@frappe.whitelist()
+def create_new_sales_invoice(supplier,date,amount):
+
+    #import datetime
+
+	doc                   = frappe.new_doc("Purchase Invoice")
+	doc.company           = frappe.db.get_single_value("Global Defaults", "default_company")
+	doc.series            = "ACC-PINV-.YYYY.-"
+	doc.supplier 		  = supplier
+	doc.posting_date      = date
+	doc.append("items" ,{"item_code" : "50005000" ,
+	"item_name":"Custom Service" , "qty":"1" , "uom":"Nos" ,"rate":amount })
+	doc.insert()
+	doc.save()
+	frappe.db.commit()
+
+
+
 
 @frappe.whitelist()
 def make_inter_company_sales_invoice(source_name, target_doc=None):
