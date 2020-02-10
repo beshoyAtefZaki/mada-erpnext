@@ -566,3 +566,25 @@ def get_payroll_entries_for_jv(doctype, txt, searchfield, start, page_len, filte
 			'txt': "%%%s%%" % frappe.db.escape(txt),
 			'start': start, 'page_len': page_len
 		})
+
+
+@frappe.whitelist()
+def create_employee_entry(name):
+	data = frappe.db.sql('''SELECT * FROM `tabSalary Slip` WHERE payroll_entry =('%s') ''' %name , as_dict=True)
+	return(data)
+
+
+@frappe.whitelist()
+def get_data_salary_slip():
+	return("here")
+
+@frappe.whitelist()
+def get_leave_allocation_records(employee=None):
+	conditions = (" and employee='%s'" % employee) if employee else ""
+
+	leave_allocation_records = frappe.db.sql("""
+		select  leave_type, total_leaves_allocated, total_leaves_encashed, from_date, to_date
+		from `tabLeave Allocation`
+		where Employee =(%s) and docstatus=1 {0}""".%employee, as_dict=1)
+
+	return leave_allocation_records

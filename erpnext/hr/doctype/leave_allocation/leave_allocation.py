@@ -139,7 +139,7 @@ def get_carry_forwarded_leaves(employee, leave_type, date, carry_forward=None):
 	carry_forwarded_leaves = 0
 
 	if carry_forward:
-		validate_carry_forward(leave_type)
+		# validate_carry_forward(leave_type)
 
 		previous_allocation = frappe.db.sql("""
 			select name, from_date, to_date, total_leaves_allocated

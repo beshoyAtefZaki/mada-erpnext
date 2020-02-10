@@ -35,6 +35,9 @@ class SalarySlip(TransactionBase):
 		self.name = make_autoname(self.series)
 
 	def validate(self):
+		salary_mode= get_salary_detatil(self.employee)
+		if salary_mode :
+			self.salary_mode = salary_mode
 		self.status = self.get_status()
 		self.validate_dates()
 		self.check_existing()
@@ -186,7 +189,8 @@ class SalarySlip(TransactionBase):
 			joining_date, relieving_date = frappe.get_cached_value("Employee", self.employee,
 				["date_of_joining", "relieving_date"])
 
-		working_days = date_diff(self.end_date, self.start_date) + 1
+		# working_days = date_diff(self.end_date, self.start_date) + 1
+		working_days = 30
 		if for_preview:
 			self.total_working_days = working_days
 			self.payment_days = working_days
@@ -195,8 +199,8 @@ class SalarySlip(TransactionBase):
 		holidays = self.get_holidays_for_employee(self.start_date, self.end_date)
 		actual_lwp = self.calculate_lwp(holidays, working_days)
 		if not cint(frappe.db.get_value("HR Settings", None, "include_holidays_in_total_working_days")):
-			working_days -= len(holidays)
-			if working_days < 0:
+			working_days_t = working_days - len(holidays)
+			if working_days_t < 0:
 				frappe.throw(_("There are more holidays than working days this month."))
 
 		if not lwp:
@@ -207,7 +211,7 @@ class SalarySlip(TransactionBase):
 		self.total_working_days = working_days
 		self.leave_without_pay = lwp
 
-		payment_days = flt(self.get_payment_days(joining_date, relieving_date)) - flt(lwp)
+		payment_days =working_days - flt(lwp)
 		self.payment_days = payment_days > 0 and payment_days or 0
 
 	def get_payment_days(self, joining_date, relieving_date):
@@ -226,7 +230,7 @@ class SalarySlip(TransactionBase):
 				frappe.throw(_("Employee relieved on {0} must be set as 'Left'")
 					.format(relieving_date))
 
-		payment_days = date_diff(end_date, start_date) + 1
+		payment_days = 30
 
 		if not cint(frappe.db.get_value("HR Settings", None, "include_holidays_in_total_working_days")):
 			holidays = self.get_holidays_for_employee(start_date, end_date)
@@ -848,3 +852,11 @@ def unlink_ref_doc_from_salary_slip(ref_no):
 def generate_password_for_pdf(policy_template, employee):
 	employee = frappe.get_doc("Employee", employee)
 	return policy_template.format(**employee.as_dict())
+
+
+def get_salary_detatil(name):
+	data = frappe.db.get_value("Employee", name, ["salary_mode"], as_dict=1)
+	if data :
+		return data['salary_mode']
+	else:
+		return None

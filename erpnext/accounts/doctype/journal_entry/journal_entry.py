@@ -995,3 +995,7 @@ def make_inter_company_journal_entry(name, voucher_type, company):
 	journal_entry.posting_date = nowdate()
 	journal_entry.inter_company_journal_entry_reference = name
 	return journal_entry.as_dict()
+
+@frappe.whitelist()
+def selct_sierial(post_date):
+	return(	post_date[0:4])

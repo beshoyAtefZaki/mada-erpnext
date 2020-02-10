@@ -866,11 +866,11 @@ frappe.ui.form.on("Purchase Invoice", {
 	},
 	customs_services_total: function(frm){
 		// var item_count = 0
-		// var i;
-		// var rate = 1
-		// if (frm.doc.conversion_rate > 1 ){
-		// 	rate = frm.doc.conversion_rate ;
-		// }
+		var i;
+		var rate = 1
+		if (frm.doc.conversion_rate > 1 ){
+			rate = frm.doc.conversion_rate ;
+		}
 		// if (frm.doc.items){
 		// for (i=0 ; i < frm.doc.items.length ; i++){
 		// 	item_count += frm.doc.items[i].qty
@@ -881,11 +881,11 @@ frappe.ui.form.on("Purchase Invoice", {
 		// }
 		// var avrige = frm.doc.customs_services_total/item_count
 		var price ;
-		for (i=0 ; i < frm.doc.items.length ; i++){
-			frm.doc.items[i].customs_servisec_total = avrige
-			price = frm.doc.items[i].rate * rate
-			// frm.doc.items[i].real_price = price + frm.doc.items[i].shipping_serices+frm.doc.items[i].customs_servisec_total +frm.doc.items[i].insurance_services
-		}
+		// for (i=0 ; i < frm.doc.items.length ; i++){
+		// 	frm.doc.items[i].customs_servisec_total = avrige
+		// 	price = frm.doc.items[i].rate * rate
+		// 	// frm.doc.items[i].real_price = price + frm.doc.items[i].shipping_serices+frm.doc.items[i].customs_servisec_total +frm.doc.items[i].insurance_services
+		// }
 
 		var item_count = 0
 		for (i=0 ; i < frm.doc.items.length ; i++){
@@ -894,7 +894,7 @@ frappe.ui.form.on("Purchase Invoice", {
 				var neg =frm.doc.customs_services_total/pri_en
 				var fin = pri * neg
 				var su = fin/ frm.doc.items[i].qty
-			
+
 				frm.doc.items[i].real_price = pri + fin
 
 

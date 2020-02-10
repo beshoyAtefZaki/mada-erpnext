@@ -76,8 +76,8 @@ class PurchaseInvoice(BuyingController):
 			self.validate_supplier_invoice()
 
 		# validate cash purchase
-		if (self.is_paid == 1):
-			self.validate_cash()
+		# if (self.is_paid == 1):
+		# 	self.validate_cash()
 
 		# validate service stop date to lie in between start and end date
 		validate_service_stop_date(self)
@@ -329,6 +329,7 @@ class PurchaseInvoice(BuyingController):
 		#create sales invoice
 		if self.local_extract:
 			create_new_sales_invoice( self.local_extract , self.posting_date ,self.customs_services_total)
+
 		self.check_prev_docstatus()
 		self.update_status_updater_args()
 		self.update_prevdoc_status()
@@ -364,6 +365,7 @@ class PurchaseInvoice(BuyingController):
 
 		if gl_entries:
 			update_outstanding = "No" if (cint(self.is_paid) or self.write_off_account) else "Yes"
+			self.make_service_gl_enties(gl_entries)
 
 			make_gl_entries(gl_entries,  cancel=(self.docstatus == 2),
 				update_outstanding=update_outstanding, merge_entries=False)
@@ -400,7 +402,7 @@ class PurchaseInvoice(BuyingController):
 
 		gl_entries = merge_similar_entries(gl_entries)
 
-		self.make_payment_gl_entries(gl_entries)
+		#self.make_payment_gl_entries(gl_entries)
 		self.make_write_off_gl_entry(gl_entries)
 		self.make_gle_for_rounding_adjustment(gl_entries)
 
@@ -410,11 +412,14 @@ class PurchaseInvoice(BuyingController):
 		# Checked both rounding_adjustment and rounded_total
 		# because rounded_total had value even before introcution of posting GLE based on rounded total
 		grand_total = self.rounded_total if (self.rounding_adjustment and self.rounded_total) else self.grand_total
-
+		# if not  self.shipping_included :
+		# 	 grand_total = grand_total + self.customs_services_total
 		if grand_total:
+			# if not  self.shipping_included :
+			# 	 grand_total = grand_total + self.customs_services_total
 			# Didnot use base_grand_total to book rounding loss gle
 			grand_total_in_company_currency = flt(grand_total * self.conversion_rate,
-				self.precision("grand_total"))
+				self.precision("grand_total")) +self.customs_services_total
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": self.credit_to,
@@ -624,7 +629,17 @@ class PurchaseInvoice(BuyingController):
 			warehouse_debit_amount = stock_amount
 
 		return warehouse_debit_amount
+	def make_service_gl_enties(self,gl_entries):
 
+						gl_entries.append(
+							self.get_gl_dict({
+								"account": self.expenses_included_in_valuation,
+								"cost_center": self.cost_center,
+								"against": self.supplier,
+								"credit": self.customs_services_total,
+								"remarks": self.remarks or "Accounting Entry for Stock"
+							})
+						)
 	def make_tax_gl_entries(self, gl_entries):
 		# tax table gl entries
 		valuation_tax = {}

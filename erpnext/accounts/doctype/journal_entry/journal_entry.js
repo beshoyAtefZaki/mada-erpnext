@@ -1,11 +1,15 @@
 // Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 // License: GNU General Public License v3. See license.txt
-
+//update
 frappe.provide("erpnext.accounts");
 frappe.provide("erpnext.journal_entry");
 
 
 frappe.ui.form.on("Journal Entry", {
+
+posting_date :function(frm){
+ 	 console.log("heelo")
+  },
 	setup: function(frm) {
 		frm.add_fetch("bank_account_no", "account", "account");
 	},
@@ -97,11 +101,28 @@ frappe.ui.form.on("Journal Entry", {
 	},
 
 	posting_date: function(frm) {
+
+			frappe.call({
+				args:{
+					post_date : frm.doc.posting_date
+				},
+				method:"erpnext.accounts.doctype.journal_entry.journal_entry.selct_sierial",
+				callback: function (r) {
+					// console.log(r.message)
+					if(r.message=='2019'){
+							console.log(r.message)
+							frm.set_value("naming_series" , "YYYY.-JV-")
+							frm.refresh_field("naming_series")
+					}
+				}
+			});
+
 		if(!frm.doc.multi_currency || !frm.doc.posting_date) return;
 
 		$.each(frm.doc.accounts || [], function(i, row) {
 			erpnext.journal_entry.set_exchange_rate(frm, row.doctype, row.name);
 		})
+
 	},
 
 	company: function(frm) {
